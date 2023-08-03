@@ -1,5 +1,5 @@
-#ifndef _COUCHBOTDEFS_H
-#define _COUCHBOTDEFS_H
+#ifndef _CADDYCOUCH2DEFS_H
+#define _CADDYCOUCH2DEFS_H
 
 // Parameter EEPROM addresses
 const int outEnAddr     = 0;  // boolean
@@ -62,4 +62,4 @@ const String invalidPrmString = "Invalid Parameter";
 const String boolTrue = "true";
 const String boolFalse = "false";
 
-#endif // _COUCHBOTDEFS_H
+#endif // _CADDYCOUCH2DEFS_H
