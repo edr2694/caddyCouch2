@@ -11,14 +11,14 @@ const int diffDZAddr    = 6;  // uint16_t
 const int maxDiffAddr   = 8;  // uint16_t
 const int maxPWMAddr    = 10; // uint8_t
 const int minPWMAddr    = 11; // uint8_t
-const int CH1_MAXAddr   = 12; // uint16_t
-const int CH1_MINAddr   = 14; // uint16_t
-const int CH2_MAXAddr   = 16; // uint16_t
-const int CH2_MINAddr   = 18; // uint16_t
-const int CH3_MAXAddr   = 20; // uint16_t
-const int CH3_MINAddr   = 22; // uint16_t
-const int CH8_MINAddr   = 24; // uint16_t
-const int CH8_MAXAddr   = 26; // uint16_t
+const int CH1_MAX_INPUTAddr   = 12; // uint16_t
+const int CH1_MIN_INPUTAddr   = 14; // uint16_t
+const int CH2_MAX_INPUTAddr   = 16; // uint16_t
+const int CH2_MIN_INPUTAddr   = 18; // uint16_t
+const int CH3_MAX_INPUTAddr   = 20; // uint16_t
+const int CH3_MIN_INPUTAddr   = 22; // uint16_t
+const int CH8_MIN_INPUTAddr   = 24; // uint16_t
+const int CH8_MAX_INPUTAddr   = 26; // uint16_t
 const int delayMilsAddr = 28; // uint16_t
 
 // Parameters
