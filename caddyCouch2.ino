@@ -49,7 +49,6 @@ int16_t CH2_scaled_input_persistent = 0;
 int16_t CH3_scaled_input_persistent = 0;
 int16_t CH8_scaled_input_persistent = 0;
 uint32_t timeout                = 100;
-uint32_t lastTime               = 0;
 uint8_t  maxLeftPWM             = 180;
 uint8_t  minLeftPWM             = 0;
 uint8_t  maxRightPWM            = 180;
@@ -79,10 +78,10 @@ void loop() {
     if (newCommand) {
         handleCommand(); // do this first, because if anything changed we want to implement it immediately.
     }
-    int16_t CH1_IN_VAL;
-    int16_t CH2_IN_VAL;
-    int16_t CH3_IN_VAL;
-    int16_t CH8_IN_VAL;
+    uint32_t CH1_IN_VAL;
+    uint32_t CH2_IN_VAL;
+    uint32_t CH3_IN_VAL;
+    uint32_t CH8_IN_VAL;
     getSmoothReceiver(&CH1_IN_VAL, &CH2_IN_VAL, &CH3_IN_VAL, &CH8_IN_VAL);
     if (claibrateFlag) {
         handleCalibration(CH1_IN_VAL, CH2_IN_VAL, CH3_IN_VAL, CH8_IN_VAL);
@@ -94,46 +93,59 @@ void loop() {
 
 }
 
-void getReceiver(int16_t *ch1, int16_t *ch2, int16_t *ch3, int16_t *ch8) {
-  CH1_last_value = 0;
-  CH2_last_value = 0;
-  CH3_last_value = 0;
-  CH8_last_value = 0;
+void getReceiver(uint32_t *ch1, uint32_t *ch2, uint32_t *ch3, uint32_t *ch8) {
+    uint32_t CH1_persistant_value = 0;
+    uint32_t CH2_persistant_value = 0;
+    uint32_t CH3_persistant_value = 0;
+    uint32_t CH8_persistant_value = 0;
 
-  lastTime = millis();
-  while (CH1_last_value == 0 && millis() - lastTime < timeout) {
-    CH1_last_value = pulseIn(RC_CH1, HIGH, 20000);
-  }
-  lastTime = millis();
-  while (CH2_last_value == 0 && millis() - lastTime < timeout) {
-    CH2_last_value = pulseIn(RC_CH2, HIGH, 20000);
-  }
-  lastTime = millis();
-  while (CH3_last_value == 0 && millis() - lastTime < timeout) {
-    CH3_last_value = pulseIn(RC_CH3, HIGH, 20000);
-  }
-  lastTime = millis();
-  while (CH8_last_value == 0 && millis() - lastTime < timeout) {
-    CH8_last_value = pulseIn(RC_CH8, HIGH, 20000);
-  }
+    uint32_t lastTime = millis();
+    while (CH1_persistant_value == 0 && (millis() - lastTime < timeout)) {
+      CH1_persistant_value = pulseIn(RC_CH1, HIGH, 20000);
+    }
+    lastTime = millis();
+    while (CH2_persistant_value == 0 && (millis() - lastTime < timeout)) {
+        CH2_persistant_value = pulseIn(RC_CH2, HIGH, 20000);
+    }
+    lastTime = millis();
+    while (CH3_persistant_value == 0 && (millis() - lastTime < timeout)) {
+        CH3_persistant_value = pulseIn(RC_CH3, HIGH, 20000);
+    }
+    lastTime = millis();
+    while (CH8_persistant_value == 0 && (millis() - lastTime < timeout)) {
+        CH8_persistant_value = pulseIn(RC_CH8, HIGH, 20000);
+    }
+
+    ch1 = &CH1_persistant_value;
+    ch2 = &CH2_persistant_value;
+    ch3 = &CH3_persistant_value;
+    ch8 = &CH8_persistant_value;
 }
 
-void getSmoothReceiver(int16_t *ch1, int16_t *ch2, int16_t *ch3, int16_t *ch8) {
-    int32_t ch1Average = 0;
-    int32_t ch2Average = 0;
-    int32_t ch3Average = 0;
-    int32_t ch8Average = 0;
+void getSmoothReceiver(uint32_t *ch1, uint32_t *ch2, uint32_t *ch3, uint32_t *ch8) {
+    uint32_t ch1Average = 0;
+    uint32_t ch2Average = 0;
+    uint32_t ch3Average = 0;
+    uint32_t ch8Average = 0;
+    uint32_t ch1In =      0;
+    uint32_t ch2In =      0;
+    uint32_t ch3In =      0;
+    uint32_t ch8In =      0;
     for (uint8_t i = 0; i < 3; i++) {
-        getReceiver();
-        ch1Average += CH1_last_value;
-        ch2Average += CH2_last_value;
-        ch3Average += CH3_last_value;
-        ch8Average += CH8_last_value;
+        getReceiver(&ch1In, &ch2In, &ch3In, &ch8In);
+        ch1Average += ch1In;
+        ch2Average += ch2In;
+        ch3Average += ch3In;
+        ch8Average += ch8In;
     }
-    CH1_last_value = ch1Average / 3.0;
-    CH2_last_value = ch2Average / 3.0;
-    CH3_last_value = ch3Average / 3.0;
-    CH8_last_value = ch8Average / 3.0;
+    ch1Average = (uint32_t)(ch1Average / 3.0);
+    ch2Average = (uint32_t)(ch2Average / 3.0);
+    ch3Average = (uint32_t)(ch3Average / 3.0);
+    ch8Average = (uint32_t)(ch8Average / 3.0);
+    ch1 = &ch1Average;
+    ch2 = &ch2Average;
+    ch3 = &ch3Average;
+    ch8 = &ch8Average;
 }
 
 void handleCommand() {
